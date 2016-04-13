@@ -1,0 +1,11 @@
+{
+  "RootNamespace":"",
+  "Packages": [
+        "Fuse.Scripting",
+        "Fuse.Reactive",
+        "FuseCore"
+  ],
+  "Includes": [
+    "./ListDict.uno"
+  ]
+}
