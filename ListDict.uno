@@ -2,6 +2,7 @@ using Fuse;
 using Fuse.Scripting;
 using Fuse.Reactive;
 using Uno.IO;
+using Uno.Compiler.ExportTargetInterop;
 
 namespace Bolav.ForeignHelpers {
 	public class JSList : ForeignList {
@@ -36,6 +37,22 @@ namespace Bolav.ForeignHelpers {
 			return obj;
 		}
 
+		[Foreign(Language.ObjC)]
+		extern(iOS) public void FromiOS (ObjC.Object dict)
+		@{
+			for(id key in dict) {
+				::id value = [dict objectForKey:key];
+			    // NSLog(@"key=%@ value=%@", key, [dict objectForKey:key]);
+			    if ([value isKindOfClass:[NSString class]]) {
+			        @{JSDict:Of(_this).SetKeyVal(string, string):Call(key, value)};
+			    }
+			    else if ([value isKindOfClass:[NSDictionary class]]) {
+			    	id<UnoObject> ddict = @{JSDict:Of(_this).AddDictForKey(string):Call(key)};
+			    	@{JSDict:Of(ddict).FromiOS(ObjC.Object):Call(value)};
+			    }
+			}
+		@}
+
 		public override void SetKeyVal (string key, string val) {
 			obj[key] = val;
 		}
@@ -44,6 +61,12 @@ namespace Bolav.ForeignHelpers {
 			var list = new JSList(ctx);
 			obj[key] = list.GetScriptingArray();
 			return list;
+		}
+
+		public ForeignDict AddDictForKey (string key) {
+			var dict = new JSDict(ctx);
+			obj[key] = dict.GetScriptingObject();
+			return dict;
 		}
 
 	}
