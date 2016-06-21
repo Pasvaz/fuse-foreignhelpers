@@ -23,6 +23,20 @@ namespace Bolav.ForeignHelpers {
 		public Fuse.Scripting.Array GetScriptingArray () {
 			return array;
 		}
+
+		[Foreign(Language.ObjC)]
+		extern(iOS) public void FromiOS (ObjC.Object ary)
+		@{
+			for(id obj in ary) {
+			    if ([obj isKindOfClass:[NSDictionary class]]) {
+			    	id<UnoObject> ddict = @{JSList:Of(_this).NewDictRow():Call()};
+			    	@{JSDict:Of(ddict).FromiOS(ObjC.Object):Call(obj)};
+			    }
+			    else {
+			    	NSLog(@"Unhandled class JSList.FromiOS: %@", NSStringFromClass([obj class]));
+			    }
+			}
+		@}
 	}
 
 	public class JSDict : ForeignDict {
@@ -50,6 +64,9 @@ namespace Bolav.ForeignHelpers {
 			    	id<UnoObject> ddict = @{JSDict:Of(_this).AddDictForKey(string):Call(key)};
 			    	@{JSDict:Of(ddict).FromiOS(ObjC.Object):Call(value)};
 			    }
+			    else {
+			    	NSLog(@"Unhandled class JSDict.FromiOS: %@", NSStringFromClass([value class]));
+			    }
 			}
 		@}
 
@@ -63,7 +80,7 @@ namespace Bolav.ForeignHelpers {
 			return list;
 		}
 
-		public ForeignDict AddDictForKey (string key) {
+		public override ForeignDict AddDictForKey (string key) {
 			var dict = new JSDict(ctx);
 			obj[key] = dict.GetScriptingObject();
 			return dict;
@@ -82,6 +99,7 @@ namespace Bolav.ForeignHelpers {
 
 	public abstract class ForeignDict {
 		public abstract ForeignList AddListForKey(string key);
+		public abstract ForeignDict AddDictForKey (string key);
 		public abstract void SetKeyVal(string key, string val);
 	}
 
