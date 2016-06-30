@@ -37,6 +37,22 @@ namespace Bolav.ForeignHelpers {
 			    }
 			}
 		@}
+
+		[Foreign(Language.Java)]
+		extern(Android) public void FromJava (Java.Object ary)
+		@{
+			java.util.List l = (java.util.List)ary;
+			for (Object obj : l) {
+				if (obj instanceof java.util.HashMap) {
+					Object ddict = @{JSList:Of(_this).NewDictRow():Call()};
+					@{JSDict:Of(ddict).FromJava(Java.Object):Call(obj)};
+				}
+				else {
+					debug_log("Unhandled class JSList.FromJava: " + obj);
+				}
+			}
+		@}
+
 	}
 
 	public class JSDict : ForeignDict {
@@ -69,6 +85,23 @@ namespace Bolav.ForeignHelpers {
 			    }
 			}
 		@}
+
+		[Foreign(Language.Java)]
+		extern(Android) public void FromJava (Java.Object dict)
+		@{
+			java.util.HashMap map = (java.util.HashMap)dict;
+			for (Object key : map.keySet()) {
+				String key_s = key.toString();
+				Object value = map.get(key_s);
+				if (value instanceof String) {
+					@{JSDict:Of(_this).SetKeyVal(string, string):Call(key_s, value.toString())};
+				}
+			    else {
+			    	debug_log("Unhandled class JSDict.FromJava: " + value);
+			    }
+			}
+		@}
+
 
 		public override void SetKeyVal (string key, string val) {
 			obj[key] = val;
