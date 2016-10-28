@@ -44,7 +44,7 @@ namespace Bolav.ForeignHelpers {
 			java.util.List l = (java.util.List)ary;
 			for (Object obj : l) {
 				if (obj instanceof java.util.HashMap) {
-					Object ddict = @{JSList:Of(_this).NewDictRow():Call()};
+					UnoObject ddict = @{JSList:Of(_this).NewDictRow():Call()};
 					@{JSDict:Of(ddict).FromJava(Java.Object):Call(obj)};
 				}
 				else {
