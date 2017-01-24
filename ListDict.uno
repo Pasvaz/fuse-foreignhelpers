@@ -80,6 +80,15 @@ namespace Bolav.ForeignHelpers {
 			    	id<UnoObject> ddict = @{JSDict:Of(_this).AddDictForKey(string):Call(key)};
 			    	@{JSDict:Of(ddict).FromiOS(ObjC.Object):Call(value)};
 			    }
+			    else if ([value isKindOfClass:[NSNumber class]]) {
+
+					@{JSDict:Of(_this).SetKeyVal(string, string):Call(key, [value stringValue])};
+			    }
+			    else if ([value isKindOfClass:[NSArray class]]) {
+
+			    	id<UnoObject> array = @{JSDict:Of(_this).AddListForKey(string):Call(key)};
+			    	@{JSList:Of(array).FromiOS(ObjC.Object):Call(value)};
+			    }
 			    else {
 			    	NSLog(@"Unhandled class JSDict.FromiOS: %@", NSStringFromClass([value class]));
 			    }
