@@ -55,6 +55,13 @@ namespace Bolav.ForeignHelpers {
 
 	}
 
+	[ForeignInclude(Language.Java,
+					"java.lang.Object",
+    	            "java.util.List",
+	                "java.util.ArrayList",
+	                "java.util.Map",
+	                "java.util.HashMap",
+	                "android.util.Log")]
 	public class JSDict : ForeignDict {
 		Context ctx;
 		Fuse.Scripting.Object obj;
@@ -71,8 +78,9 @@ namespace Bolav.ForeignHelpers {
 		extern(iOS) public void FromiOS (ObjC.Object dict)
 		@{
 			for(id key in dict) {
+				
 				::id value = [dict objectForKey:key];
-			    // NSLog(@"key=%@ value=%@", key, [dict objectForKey:key]);
+			    
 			    if ([value isKindOfClass:[NSString class]]) {
 			        @{JSDict:Of(_this).SetKeyVal(string, string):Call(key, value)};
 			    }
@@ -99,13 +107,28 @@ namespace Bolav.ForeignHelpers {
 		extern(Android) public void FromJava (Java.Object dict)
 		@{
 			java.util.HashMap map = (java.util.HashMap)dict;
+
 			for (Object key : map.keySet()) {
+
 				String key_s = key.toString();
 				Object value = map.get(key_s);
+
 				if (value instanceof String) {
+
 					@{JSDict:Of(_this).SetKeyVal(string, string):Call(key_s, value.toString())};
 				}
+				else if (value instanceof Map) {
+				
+					UnoObject ddict = @{JSDict:Of(_this).AddDictForKey(string):Call(key)};
+			    	@{JSDict:Of(ddict).FromJava(Java.Object):Call(value)};
+				}
+				else if( value instanceof List) {
+
+		    		UnoObject array = @{JSDict:Of(_this).AddListForKey(string):Call(key)};
+			    	@{JSList:Of(array).FromJava(Java.Object):Call(value)};
+				}			
 			    else {
+
 			    	debug_log("Unhandled class JSDict.FromJava: " + value);
 			    }
 			}
