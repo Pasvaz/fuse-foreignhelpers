@@ -1,9 +1,8 @@
 {
   "RootNamespace":"",
   "Packages": [
-        "Fuse.Scripting",
-        "Fuse.Reactive",
-        "FuseCore"
+        "Fuse",
+        "FuseJS"
   ],
   "Includes": [
     "./ListDict.uno"
