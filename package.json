@@ -1,0 +1,22 @@
+{
+  "name": "fuse-foreignhelpers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "foreignhelpers_include.unoproj",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pasvaz/fuse-foreignhelpers.git"
+  },
+  "keywords": [
+    "fuse"
+  ],
+  "author": "Bolav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pasvaz/fuse-foreignhelpers/issues"
+  },
+  "homepage": "https://github.com/Pasvaz/fuse-foreignhelpers#readme"
+}
